@@ -1,0 +1,7 @@
+APIKEY='mGBfltC2nuUtOI5udrucfhcpH'
+APISECRET='WRuQFpmLUiiCJqhdgDn3cSO209rCqQWW5AsVIc54yx2MwYWU52'
+ACCESSTOKEN='4432955655-Z009iaxOQuZ8wuYbC5Y1MXzQsHF0r5YxyKWAxrC'
+ACCESSTOKENSECRET='3aFTtkjof6xFr8BiLS56reR7KHkT1gP9oRarM9kAZ2kwL'
+WEATHERURL='http://api.wunderground.com/api/0e65edd03d4aaa4b/conditions/q/ph/davao.json'
+GREETING='Kamusta, K?'
+WATCH='wilsonweatherbo'
