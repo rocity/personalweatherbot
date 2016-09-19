@@ -19,7 +19,10 @@ t = TwitterAPI(secrets.APIKEY,
                secrets.ACCESSTOKEN,
                secrets.ACCESSTOKENSECRET)
 
+print("Welcome to the Weather bot")
+
 def bot():
+    print("Running BOT...")
     # secrets.watch: Screen name to observe tweets on
     r = t.request('statuses/mentions_timeline', {
         'screen_name': secrets.WATCH,
@@ -48,6 +51,7 @@ def bot():
 
     # run again after 1 minute
     s.enter(60, 1, bot, ())
+    print("BOT has finished its routine")
 
 # scheduler
 s.enter(60, 1, bot, ())
