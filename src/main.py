@@ -31,6 +31,9 @@ def bot():
         })
 
     for tweet in r:
+        print("ID_STR: %s" % tweet['id_str'])
+        print("LastID: %s" % lastid)
+
         # check if the latest tweet is the one we replied to last
         if tweet['id_str'] != lastid:
             # generate a reply to the tweet using the weather module
