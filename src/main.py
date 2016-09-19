@@ -16,24 +16,29 @@ t = TwitterAPI(secrets.APIKEY,
                secrets.ACCESSTOKEN,
                secrets.ACCESSTOKENSECRET)
 
-# secrets.watch: Screen name to observe tweets on
-r = t.request('statuses/mentions_timeline', {
-    'screen_name': secrets.WATCH,
-    'since_id': lastid,
-    'count': 1
-    })
+def bot():
+    # secrets.watch: Screen name to observe tweets on
+    r = t.request('statuses/mentions_timeline', {
+        'screen_name': secrets.WATCH,
+        'since_id': lastid,
+        'count': 1
+        })
 
-for tweet in r:
-    print("latest tweet: %s" % tweet['id_str'])
-    print("last replied to: %s" % lastid)
-    if tweet['id_str'] != lastid:
-        
-        print("replying to %s" % tweet['id_str'])
-        reply_text = getWeather(tweet['user']['screen_name'])
-        print(reply_text)
+    for tweet in r:
+        # check if the latest tweet is the one we replied to last
+        if tweet['id_str'] != lastid:
+            # generate a reply to the tweet using the weather module
+            reply_text = getWeather(tweet['user']['screen_name'])
+            print(reply_text)
 
-        # with open('idstr.json', 'w') as outfile:
-            # save last tweet to json file
-            # json.dump({'laststr': tweet['id_str']}, outfile)
-    else:
-        print('no new tweets')
+            # send a reply to the tweet
+            newreply = t.request('statuses/update', {
+                'status': reply_text,
+                'in_reply_to_status_id': tweet['id_str']
+                })
+
+            # save last tweet to a json file
+            with open('idstr.json', 'w') as outfile:
+                json.dump({'laststr': tweet['id_str']}, outfile)
+        else:
+            print('no new tweets')
