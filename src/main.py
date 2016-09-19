@@ -2,6 +2,9 @@ import json
 import secrets
 from TwitterAPI import TwitterAPI
 from weather import getWeather
+import sched, time
+
+s = sched.scheduler(time.time, time.sleep)
 
 lastid = ""
 
@@ -42,3 +45,10 @@ def bot():
                 json.dump({'laststr': tweet['id_str']}, outfile)
         else:
             print('no new tweets')
+
+    # run again after 1 minute
+    s.enter(60, 1, bot, ())
+
+# scheduler
+s.enter(60, 1, bot, ())
+s.run()
