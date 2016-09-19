@@ -1,24 +1,39 @@
-from urllib.request import urlopen
 import json
 import secrets
-import twitter
-import codecs
+from TwitterAPI import TwitterAPI
+from weather import getWeather
 
-reader = codecs.getreader("utf-8")
+lastid = ""
+
+# get last tweet id to whom we replied to
+with open('idstr.json', 'r') as openfile:
+    savedid = json.load(openfile)
+    lastid = savedid['laststr']
 
 # initialize twitter api
-t = twitter.Api(consumer_key=secrets.APIKEY,
-                  consumer_secret=secrets.APISECRET,
-                  access_token_key=secrets.ACCESSTOKEN,
-                  access_token_secret=secrets.ACCESSTOKENSECRET)
+t = TwitterAPI(secrets.APIKEY,
+               secrets.APISECRET,
+               secrets.ACCESSTOKEN,
+               secrets.ACCESSTOKENSECRET)
 
-response = urlopen(secrets.WEATHERURL).read().decode('utf8')
-parsed_json = json.loads(response)
+# secrets.watch: Screen name to observe tweets on
+r = t.request('statuses/mentions_timeline', {
+    'screen_name': secrets.WATCH,
+    'since_id': lastid,
+    'count': 1
+    })
 
-location = parsed_json['current_observation']['display_location']['city']
-tempc = parsed_json['current_observation']['temp_c']
-weather = parsed_json['current_observation']['weather']
-obstime = parsed_json['current_observation']['observation_time']
+for tweet in r:
+    print("latest tweet: %s" % tweet['id_str'])
+    print("last replied to: %s" % lastid)
+    if tweet['id_str'] != lastid:
+        
+        print("replying to %s" % tweet['id_str'])
+        reply_text = getWeather(tweet['user']['screen_name'])
+        print(reply_text)
 
-report_text = "Current temperature in %s is %sc at %s. %s" % (location, tempc, weather, obstime)
-master_report = "%s %s" % (secrets.GREETING, report_text)
+        # with open('idstr.json', 'w') as outfile:
+            # save last tweet to json file
+            # json.dump({'laststr': tweet['id_str']}, outfile)
+    else:
+        print('no new tweets')
